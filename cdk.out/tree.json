@@ -1,0 +1,303 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.1.241"
+        }
+      },
+      "sam-cdk": {
+        "id": "sam-cdk",
+        "path": "sam-cdk",
+        "children": {
+          "SamCdkQueue": {
+            "id": "SamCdkQueue",
+            "path": "sam-cdk/SamCdkQueue",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "sam-cdk/SamCdkQueue/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
+                  "aws:cdk:cloudformation:props": {
+                    "visibilityTimeout": 300
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sqs.CfnQueue",
+                  "version": "2.25.0"
+                }
+              },
+              "Policy": {
+                "id": "Policy",
+                "path": "sam-cdk/SamCdkQueue/Policy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "sam-cdk/SamCdkQueue/Policy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::SQS::QueuePolicy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sqs:SendMessage",
+                              "Condition": {
+                                "ArnEquals": {
+                                  "aws:SourceArn": {
+                                    "Ref": "SamCdkTopicBDD3A836"
+                                  }
+                                }
+                              },
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "sns.amazonaws.com"
+                              },
+                              "Resource": {
+                                "Fn::GetAtt": [
+                                  "SamCdkQueue4324A2A7",
+                                  "Arn"
+                                ]
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "queues": [
+                          {
+                            "Ref": "SamCdkQueue4324A2A7"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_sqs.CfnQueuePolicy",
+                      "version": "2.25.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sqs.QueuePolicy",
+                  "version": "2.25.0"
+                }
+              },
+              "samcdkSamCdkTopicFE53C216": {
+                "id": "samcdkSamCdkTopicFE53C216",
+                "path": "sam-cdk/SamCdkQueue/samcdkSamCdkTopicFE53C216",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "sam-cdk/SamCdkQueue/samcdkSamCdkTopicFE53C216/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::SNS::Subscription",
+                      "aws:cdk:cloudformation:props": {
+                        "protocol": "sqs",
+                        "topicArn": {
+                          "Ref": "SamCdkTopicBDD3A836"
+                        },
+                        "endpoint": {
+                          "Fn::GetAtt": [
+                            "SamCdkQueue4324A2A7",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_sns.CfnSubscription",
+                      "version": "2.25.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sns.Subscription",
+                  "version": "2.25.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_sqs.Queue",
+              "version": "2.25.0"
+            }
+          },
+          "SamCdkTopic": {
+            "id": "SamCdkTopic",
+            "path": "sam-cdk/SamCdkTopic",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "sam-cdk/SamCdkTopic/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SNS::Topic",
+                  "aws:cdk:cloudformation:props": {}
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sns.CfnTopic",
+                  "version": "2.25.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_sns.Topic",
+              "version": "2.25.0"
+            }
+          },
+          "DemoRole": {
+            "id": "DemoRole",
+            "path": "sam-cdk/DemoRole",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "sam-cdk/DemoRole/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "lambda.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "managedPolicyArns": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/ReadOnlyAccess"
+                          ]
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.25.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.25.0"
+            }
+          },
+          "sam-cdk": {
+            "id": "sam-cdk",
+            "path": "sam-cdk/sam-cdk",
+            "children": {
+              "Code": {
+                "id": "Code",
+                "path": "sam-cdk/sam-cdk/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "sam-cdk/sam-cdk/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.25.0"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "sam-cdk/sam-cdk/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.25.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.25.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "sam-cdk/sam-cdk/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                      },
+                      "s3Key": "0ebae42df21b88e12eb3c3a9d429953be606a74f14564841aa3371748dd48266.zip"
+                    },
+                    "role": {
+                      "Fn::GetAtt": [
+                        "DemoRoleF318DC4B",
+                        "Arn"
+                      ]
+                    },
+                    "functionName": "sam-cdk-function-demo",
+                    "handler": "demo-lambda-code.lambda_handler",
+                    "runtime": "python3.9",
+                    "timeout": 60
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.25.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda.Function",
+              "version": "2.25.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "sam-cdk/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "sam-cdk/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.25.0"
+                }
+              },
+              "Condition": {
+                "id": "Condition",
+                "path": "sam-cdk/CDKMetadata/Condition",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnCondition",
+                  "version": "2.25.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.1.241"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.25.0"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.25.0"
+    }
+  }
+}
